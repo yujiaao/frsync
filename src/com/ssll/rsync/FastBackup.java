@@ -71,10 +71,12 @@ public class FastBackup {
 		FileFilter fileFilter = new RegexFileFilter(pattern);
 		File[] files = dir.listFiles(fileFilter);
 
-		if (files.length > 0) {
+		if (files!=null && files.length > 0) {
 			/** The newest file comes first **/
 			Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
 			theNewestFile = files[0];
+		}else{
+			log("No files had been fund in path: "+ filePath+" with pattern: "+ pattern);
 		}
 
 		return theNewestFile;
@@ -88,7 +90,7 @@ public class FastBackup {
 	}
 
 	public void run(String remote, String password, String localPath,
-			String pattern, String dateFormat) throws IOException {
+			String pattern, String dateFormat) throws IOException, InterruptedException {
 		File f = getTheNewestFileByPattern(localPath, pattern);
 		if (f.isFile()) {
 			
@@ -99,7 +101,7 @@ public class FastBackup {
 					log("Done.");
 					break;
 				} else {
-					String fileName =f.getPath() + File.separator + local; 
+					String fileName =f.getParent() + File.separator + local; 
 					cp(f, fileName);
 					int res = rsync(remote, password, local);
 					log("rsync result=" + res);
@@ -116,33 +118,40 @@ public class FastBackup {
 		String oldName = f.getName();
 
 		// System.out.println(oldName);
+		log("Name:"+oldName+" pattern:"+pattern);
 
 		Pattern ptn = Pattern.compile(pattern);
 		Matcher m = ptn.matcher(oldName);
-		m.matches();
-		m.find();
-		String oldDate = m.group(0);
-
-		// System.out.println(oldDate);
-
-		int year = Integer.parseInt(oldDate.substring(0, 4));
-		int month = Integer.parseInt(oldDate.substring(4, 6));
-		int date = Integer.parseInt(oldDate.substring(6, 8));
-		Calendar cal = Calendar.getInstance();
-		Calendar today = Calendar.getInstance();
-		cal.set(year, month - 1, date);
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		if (cal.after(today)) {
+		
+		if(m.find()){
+			String oldDate = m.group(1);
+	
+			// System.out.println(oldDate);
+	
+			int year = Integer.parseInt(oldDate.substring(0, 4));
+			int month = Integer.parseInt(oldDate.substring(4, 6));
+			int date = Integer.parseInt(oldDate.substring(6, 8));
+			Calendar cal = Calendar.getInstance();
+			Calendar today = Calendar.getInstance();
+			cal.set(year, month - 1, date);
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			if (cal.after(today)) {
+				return null;
+			} else {
+				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
+				String newDate = sf.format(cal.getTime());
+				
+				//return m.replaceFirst(newDate);
+				return oldName.replaceFirst(oldDate, newDate);
+			}
+		}else{
+			log("Error pattern format:"+pattern+" with filename="+oldName);
 			return null;
-		} else {
-			SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
-			String newDate = sf.format(cal.getTime());
-			return oldName.replaceFirst(pattern, newDate);
 		}
 	}
 
 	protected int rsync(String remote, String password, String local)
-			throws IOException {
+			throws IOException, InterruptedException {
 		String command = "echo " + password + " | rsync " + remote + " "
 				+ local;
 		log(command);
@@ -151,7 +160,7 @@ public class FastBackup {
 
 		Process p = Runtime.getRuntime().exec(cmd);
 
-		int result = p.exitValue();
+		int result = p.waitFor();//p.exitValue();
 
 		String stdout = IOUtils.toString(p.getInputStream());
 		String stderr = IOUtils.toString(p.getErrorStream());

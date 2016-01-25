@@ -34,7 +34,7 @@ public class FastBackupTest {
 		
 		FastBackup fb = new FastBackup(true, System.out);
 		
-		String pattern="(\\d{8})";
+		String pattern="test-(\\d{8}).gz";
 		
 		File f = new File("/home/xingwx/test/frsync/test-19990102.gz");
 		
@@ -47,7 +47,7 @@ public class FastBackupTest {
 	}
 
 	@Test
-	public void testRsync() throws IOException {
+	public void testRsync() throws IOException, InterruptedException {
 		FastBackup fb = new FastBackup(true, System.out);
 		String local  = "/home/xingwx/test/frsync/test-19990102.gz";
 		File f = new File(local);

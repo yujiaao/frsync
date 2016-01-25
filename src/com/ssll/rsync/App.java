@@ -1,5 +1,6 @@
 package com.ssll.rsync;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -15,22 +16,22 @@ public class App {
 	
 	private static boolean verbose=false;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
 		Options opt = new Options();
 		opt.addOption("f", "format",  false, "date format, default is yyyyMMdd.");
 		opt.addOption("v", "verbose", false, "explain what is being done.");
-		opt.addOption("l", "localpath", false, "localpath to sync with.");
-		opt.addOption(Option
-				.builder("r")
-				.argName("remote")
-				.hasArg()
-				.desc("remote server address  like user@server:/filedir")
-				.build());
-		opt.addOption(Option.builder().longOpt("localfile")
-				.desc("local files, separated by comma if many").valueSeparator('=').hasArg()
-				.build());
+		opt.addOption("l", "localpath", true, "localpath to sync with.");
+		opt.addOption("r","remote",true,"remote server address  like user@server:/filedir");
 		opt.addOption("h", "help", false, "print help for the command.");
+
+//		opt.addOption(Option
+//				.builder("r")
+//				.argName("remote")
+//				.hasArg()
+//				.desc("remote server address  like user@server:/filedir")
+//				.build());
+
 
 		String formatstr = "java -jar frsync.jar  [-f/--format=yyyyMMdd][-v/--verbose][-h/--help] -r/--remote=user@server:/dir   -l/--localpath=/home/backup   filepattern1 filepattern2";
 
@@ -42,9 +43,11 @@ public class App {
 			cl = parser.parse(opt, args);
 		} catch (ParseException e) {
 			formatter.printHelp(formatstr, opt); // 如果发生异常，则打印出帮助信息
+			e.printStackTrace();
+			System.exit(-1);
 		}
 		// 如果包含有-h或--help，则打印出帮助信息
-		if (cl.hasOption("h") || cl.getArgs().length<1) {
+		if (cl.hasOption("h") || cl.getArgList().size()<=0) {
 			HelpFormatter hf = new HelpFormatter();
 			hf.printHelp(formatstr, "", opt, "");
 			return;
@@ -100,11 +103,16 @@ public class App {
 	}
 	
 	private static String passwordScanner(){
-		System.out.println("password: ");
-		Scanner scanIn = new Scanner(System.in);
-		String inputString = scanIn.nextLine();
-		scanIn.close();
-		return inputString;
+//		System.out.println("password: ");
+//		Scanner scanIn = new Scanner(System.in);
+//		
+//		String inputString = scanIn.nextLine();
+//		scanIn.close();
+//		return inputString;
+		Console console = System.console();
+		char passwordArray[] = console.readPassword("Enter your secret password: ");
+		return  new String(passwordArray);
+
 	}
 
 }
