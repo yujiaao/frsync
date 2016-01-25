@@ -84,15 +84,22 @@ public class FastBackup {
 
 	private void cp(File from, String to) throws IOException {
 		// FileAccess.Copy(src, dest);
-		log("cp " + from.toPath() + " to " + new File(to).toPath());
-		Files.copy(from.toPath(), new File(to).toPath());
 
+		log("cp " + from.toPath() + " to " + new File(to).toPath());
+		
+		try{
+
+   			Files.copy(from.toPath(), new File(to).toPath());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	public void run(String remote, String password, String localPath,
 			String pattern, String dateFormat) throws IOException, InterruptedException {
 		File f = getTheNewestFileByPattern(localPath, pattern);
-		if (f.isFile()) {
+		if (f!=null && f.isFile()) {
 			
 			do {
 				
@@ -103,7 +110,7 @@ public class FastBackup {
 				} else {
 					String fileName =f.getParent() + File.separator + local; 
 					cp(f, fileName);
-					int res = rsync(remote, password, local);
+					int res = rsync(remote+ File.separator + local, password, fileName);
 					log("rsync result=" + res);
 					if (res != 0)
 						break;
@@ -111,6 +118,8 @@ public class FastBackup {
 				}
 				
 			} while (true);
+		}else{
+			log("No files fund in folder: "+localPath +" with pattern: "+pattern);
 		}
 	}
 

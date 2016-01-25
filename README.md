@@ -20,3 +20,8 @@ mysqldump 数据库的备份文件为完全备份文件。每天远程复制文�
 ## 同本地的假备份与远程的备份文件进行rsync同步
 
 		rsync  user@remoteserver:/backupdir/aaa-20160111.gz  /localbackupdir/aaa-20160111.gz
+
+
+## 这种备份可能有点用，但更好的可能还是日志增量备份，而不是这种技巧
+
+ 
