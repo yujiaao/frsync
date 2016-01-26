@@ -19,6 +19,19 @@ mysqldump 数据库的备份文件为完全备份文件。每天远程复制文�
 
 		cp  aaa-20160110.gz  aaa-20160111.gz
 		
+	
+	或用下面的脚本
+	
+		time="$(date +"%Y%m%d")"
+        time_lastday="$(date --date='1 days ago' +"%Y%m%d")"
+
+
+        for db in `cat /home/xiaorui/scripts/list.txt`
+        do
+            /bin/cp  "$backup_dir/$db.$time_lastday.gz"  "$backup_dir/$db.$time.gz"
+        done
+
+		
 以上操作在本程序里自动实现
 
 
