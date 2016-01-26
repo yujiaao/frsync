@@ -96,7 +96,7 @@ public class FastBackup {
 		}
 	}
 
-	public void run(String remote, String password, String localPath,
+	public void run(String remote,  String localPath,
 			String pattern, String dateFormat) throws IOException, InterruptedException {
 		File f = getTheNewestFileByPattern(localPath, pattern);
 		if (f!=null && f.isFile()) {
@@ -110,7 +110,7 @@ public class FastBackup {
 				} else {
 					String fileName =f.getParent() + File.separator + local; 
 					cp(f, fileName);
-					int res = rsync(remote+ File.separator + local, password, fileName);
+					int res = rsync(remote+ File.separator + local, fileName);
 					log("rsync result=" + res);
 					if (res != 0)
 						break;
@@ -159,9 +159,9 @@ public class FastBackup {
 		}
 	}
 
-	protected int rsync(String remote, String password, String local)
+	protected int rsync(String remote,  String local)
 			throws IOException, InterruptedException {
-		String command = "echo " + password + " | rsync " + remote + " "
+		String command ="rsync " + remote + " "
 				+ local;
 		log(command);
 

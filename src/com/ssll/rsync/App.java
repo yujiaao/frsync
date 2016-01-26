@@ -81,13 +81,13 @@ public class App {
 }
 		
 		
-		String password = passwordScanner();
+		//String password = passwordScanner();
 		
 		// 获取参数值，这里主要是localFiles
 		for(String file: cl.getArgList()){
 			try {				
 					String pattern = file + "(\\d{8})"+".gz";
-					new FastBackup(verbose, System.out).run(remote,password,  localPath, pattern, dateFormat);
+					new FastBackup(verbose, System.out).run(remote,  localPath, pattern, dateFormat);
 				
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -51,7 +51,7 @@ public class FastBackupTest {
 		FastBackup fb = new FastBackup(true, System.out);
 		String local  = "/home/xingwx/test/frsync/test-19990102.gz";
 		File f = new File(local);
-		int res = fb.rsync("user@192.168.1.18:/home/xingwx/test", "123456", local);
+		int res = fb.rsync("user@192.168.1.18:/home/xingwx/test",  local);
 		
 		
 		    
