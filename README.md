@@ -64,12 +64,12 @@ rsync以服务的形式监听873端口
 		#!/bin/sh
 
 		server_dir=/data
-		local_dir=/home/xwx/svr001/www/data
+		local_dir=/home/data
 		JAVA=$(which java)
 		$JAVA -jar frsync-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
-		       	--remote="--password-file rsync.pass  rsync://backup@llzg.cn:${server_dir}" \
-			--localpath="${local_dir}" ssllpro. jeecms_2012. wpn.
+		       	--remote="--password-file rsync.pass  rsync://username@myserver.com:${server_dir}" \
+			--localpath="${local_dir}" db1. db2. db3.
 
-rsync.pass 明文保存对应服务器端指定的密码,权限也必须为600，这里用户名是backup
+rsync.pass 明文保存对应服务器端指定的密码,权限也必须为600，这里用户名是username
 
 
