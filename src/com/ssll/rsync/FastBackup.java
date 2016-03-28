@@ -15,7 +15,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-
+/**
+ * 用于数据库增量备份的脚本， 数据库备份时gzip要支持rsync，即加 --rsyncable 参数
+ * 
+ * @author xingwx
+ *
+ */
 public class FastBackup {
 	boolean verbose = false;
 	OutputStream out = System.out;
